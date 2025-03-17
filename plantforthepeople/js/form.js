@@ -53,18 +53,51 @@ var errorMap = [
 // js/vendor/intl-tel-input-master/examples/gen/is-valid-number.html
 var iti;
 
+$(document).ready(() => {
+	iti = window.intlTelInput(telInput, {
+		utilsScript: "js/vendor/intl-tel-input-master/build/js/utils.js"
+	  });
+})
+
+
+
 // TODO: In the functions below, use the following documentation page,
 // BUT make sure you use jQuery's show & hide methods INSTEAD of removing and
 // adding "error" and "hide" css-classes!
 // See in this project:
 // js/vendor/intl-tel-input-master/examples/gen/is-valid-number.html
-var reset = function() { };
+
+var reset = function() { 
+	telInput.classList.remove("error");
+  	errorMsg.innerHTML = "";
+  	errorMsg.classList.add("hide");
+  	validMsg.classList.add("hide");
+};
+
 // TODO: on blur: validate telInput
+
+$(telInput).on("blur", function() {
+	reset();
+	if (telInput.value.trim()) {
+		if (iti.isValidNumber()) {
+		  validMsg.classList.remove("hide");
+		} else {
+			telInput.classList.add("error");
+		  var errorCode = iti.getValidationError();
+		  errorMsg.innerHTML = errorMap[errorCode];
+		  errorMsg.classList.remove("hide");
+		}
+	  }
+})
+
 // if valid: show $validMsg
 // if there is an error: show $errorMsg
 telInput.addEventListener("blur", function() { }, false);
 
 // TODO: use addEventListener to bind telInput's keyup & change events to call reset
+$(telInput).on("change", reset);
+$(telInput).on("keyup", reset);
+
 
 // The purpose of processFormData is to do final validation checks,
 // and to stop the form from submitting,
@@ -136,6 +169,10 @@ var processFormData = function(event) {
 			$("#planting_date").val() is something like "2022-06-08"
 			and NOT something like "06/08/2022" and NOT like "22-06-08"
 			*/
+			planting_date: {
+				required: true,
+				dateISO: true
+			}
 		},
 		invalidHandler: function(event, validator) {
 			// Inside this function 'this' refers to the form
@@ -181,6 +218,9 @@ var initDatePicker = function() {
 		and yy means a 4 digit year), and have 2 digit months and days.
 		See: https://api.jqueryui.com/datepicker/#option-dateFormat
 		*/
+		$("#planting_date").datepicker({
+			dateFormat: "yy-mm-dd"
+		  });
 	}
 };
 // Initialize the jQuery UI plugin's DatePicker plugin for the planting time
@@ -188,3 +228,5 @@ initDatePicker();
 
 // TODO: Initialize the jquery-timepicker plugin for the planting time
 // See in this project the Basic Example at: timepickerexample.html
+
+$('#planting_time').timepicker();
