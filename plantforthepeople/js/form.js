@@ -68,10 +68,10 @@ $(document).ready(() => {
 // js/vendor/intl-tel-input-master/examples/gen/is-valid-number.html
 
 var reset = function() { 
-	telInput.classList.remove("error");
-  	errorMsg.innerHTML = "";
-  	errorMsg.classList.add("hide");
-  	validMsg.classList.add("hide");
+	$(telInput).show();
+  	$errorMsg.html("");
+  	$errorMsg.hide();
+  	$validMsg.hide();
 };
 
 // TODO: on blur: validate telInput
@@ -80,12 +80,12 @@ $(telInput).on("blur", function() {
 	reset();
 	if (telInput.value.trim()) {
 		if (iti.isValidNumber()) {
-		  validMsg.classList.remove("hide");
+		  $validMsg.show();
 		} else {
-			telInput.classList.add("error");
+			$(telInput).show()
 		  var errorCode = iti.getValidationError();
-		  errorMsg.innerHTML = errorMap[errorCode];
-		  errorMsg.classList.remove("hide");
+		  $errorMsg.html(errorMap[errorCode]);
+		  $errorMsg.show()
 		}
 	  }
 })
